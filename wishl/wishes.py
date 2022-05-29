@@ -46,6 +46,8 @@ def create():
 
         if error is not None:
             print("💥💥💥💥💥")
+            print(error)
+            print("💥💥💥💥💥")
             return error
         else:
             db = get_db()
@@ -55,4 +57,7 @@ def create():
                 (uid, secrets)
             )
             db.commit()
-            return Response(status=200)
+            from flask import jsonify
+            resp = jsonify(success=True)
+            resp.status_code = 200
+            return resp
