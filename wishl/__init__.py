@@ -6,6 +6,7 @@ from flask_cors import CORS
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    
     CORS(app)
     app.config.from_mapping(
         SECRET_KEY='dev',
@@ -39,5 +40,8 @@ def create_app(test_config=None):
     from . import wishes
     app.register_blueprint(wishes.bp)
     app.add_url_rule('/', endpoint='index')
+
+    from . import s3
+    app.register_blueprint(s3.bp)
 
     return app

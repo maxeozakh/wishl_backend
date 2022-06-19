@@ -1,7 +1,6 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, Response
+    Blueprint, flash, g, redirect, render_template, request, url_for, Response, jsonify
 )
-from werkzeug.exceptions import abort
 
 from wishl.auth import login_required
 from wishl.db import get_db
@@ -9,7 +8,6 @@ from wishl.db import get_db
 bp = Blueprint('wishes', __name__)
 
 
-from flask import jsonify
 @bp.route('/')
 def index():
     db = get_db()
@@ -31,7 +29,11 @@ def index():
         wishes=wishes_data,
     )
 
+from flask import jsonify
+from flask_cors import cross_origin
+
 @bp.route('/create', methods=['POST'])
+# @cross_origin()
 def create():
     if request.method == 'POST':
         json = request.get_json()
@@ -48,7 +50,10 @@ def create():
             print("💥💥💥💥💥")
             print(error)
             print("💥💥💥💥💥")
-            return error
+            resp = jsonify(success=False)
+            resp.error = error
+            resp.status_code = 400
+            return resp
         else:
             db = get_db()
             db.execute(
@@ -57,7 +62,27 @@ def create():
                 (uid, secrets)
             )
             db.commit()
-            from flask import jsonify
             resp = jsonify(success=True)
             resp.status_code = 200
             return resp
+
+def get_wishlist(uid):
+    db = get_db()
+    wish_list_data = db.execute(
+        'SELECT uid, secrets'
+        ' FROM wishes w'
+        ' WHERE uid = ?',
+        (uid,)
+    ).fetchone()
+
+    wishes_data = {}
+    wishes_data['uid'] = wish_list_data['uid']
+    wishes_data['secrets'] = wish_list_data['secrets']
+
+    return jsonify(
+        wishes_data,
+    )
+
+@bp.route('/<uid>', methods=['GET'])
+def get_wishlist_by_uid(uid):
+    return get_wishlist(uid)
