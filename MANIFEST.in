@@ -1,0 +1,4 @@
+include wishl/schema.sql
+graft wishl/static
+graft wishl/templates
+global-exclude *.pyc

@@ -78,13 +78,12 @@ def upload():
         # if "user_file" not in request.files:
         #     return "No user_file key in request.files"
     file = request.files['file']
-    print(file, '🐭')
 
     if file.filename == "":
         return "Please select a file"
     if file:
         file.filename = secure_filename(file.filename)
         output = send_to_s3(file, S3_BUCKET_NAME)
-        return str(output)
+        return jsonify({"url": output})
 
     
