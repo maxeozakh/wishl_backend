@@ -15,8 +15,6 @@ S3_LOCATION = os.environ.get('S3_LOCATION')
 
 @bp.route('/get_sign', methods=(['GET']))
 def get_info():
-
-    print(request.args.get('file_name'))
     file_name = request.args.get('file_name')
     file_type = request.args.get('file_type')
 
@@ -74,9 +72,6 @@ def send_to_s3(file, bucket_name, acl="public-read"):
 @cross_origin()
 def upload():
     S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-
-        # if "user_file" not in request.files:
-        #     return "No user_file key in request.files"
     file = request.files['file']
 
     if file.filename == "":
