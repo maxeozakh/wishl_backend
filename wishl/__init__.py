@@ -29,10 +29,10 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/hello')
     def hello():
-        return 'Hello, someone'
+        return "hello"
     
     from . import db
-    db.init_app(app)
+    db.init_db_commands(app)
 
     from . import wishes
     app.register_blueprint(wishes.bp)

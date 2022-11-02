@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS wishes;
+DROP TABLE IF EXISTS wishlists;
 DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
@@ -7,7 +7,7 @@ CREATE TABLE user (
     password TEXT NOT NULL
 );
 
-CREATE TABLE wishes (
+CREATE TABLE wishlists (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     uid TEXT UNIQUE NOT NULL,
     secrets BLOB UNIQUE NOT NULL
