@@ -2,8 +2,10 @@ from flask import (
     Blueprint, request, jsonify
 )
 from wishl.db import get_db
+from wishl import constants
 
 bp = Blueprint('wishes', __name__)
+endpoints = constants.endpoints['wishlists']
 
 
 @bp.route('/')
@@ -22,12 +24,13 @@ def index():
             'secrets': wish['secrets']
 
         })
+
     return jsonify(
         wishlists=wishlists_data,
     )
 
 
-@bp.route('/create', methods=['POST'])
+@bp.route(endpoints["create"], methods=['POST'])
 def create():
     json = request.get_json()
     uid = json.get('uid')
@@ -38,15 +41,18 @@ def create():
         error = 'uid is required.'
     elif not secrets:
         error = 'secrets is required.'
+    elif not json:
+        error = 'json is empty.'
 
     if error is not None:
-        print("💥💥💥💥💥")
-        print(error)
-        print("💥💥💥💥💥")
-        resp = jsonify(success=False)
-        resp.error = error
-        resp.status_code = 400
-        return resp
+        response_body = {
+            'success': False,
+            'error': error
+        }
+        response = jsonify(response_body)
+        response.status_code = 400
+        return response
+
     else:
         db = get_db()
         db.execute(
@@ -55,19 +61,18 @@ def create():
             (uid, secrets)
         )
         db.commit()
-        resp = jsonify(success=True)
-        resp.status_code = 200
-        return resp
+        response = jsonify(success=True)
+        response.status_code = 200
+        return response
 
 
-@bp.route('/wishlists/<uid>', methods=['GET'])
+@bp.route(endpoints["get_by_uid"] + '<uid>', methods=['GET'])
 def wishlists_get_by_uid_api(uid):
     wish = get_wishlist_by_uid(uid)
     return wish
 
 
 def get_wishlist_by_uid(uid):
-    error = None
     db = get_db()
     wishlist_data = db.execute(
         'SELECT uid, secrets'
@@ -77,16 +82,14 @@ def get_wishlist_by_uid(uid):
     ).fetchone()
 
     if not wishlist_data:
-        error = 'uid is not found.'
-        response = {
+        response_body = {
             'success': False,
-            'error': error
+            'error': 'wishlist by uid is not found.'
         }
-        resp = jsonify(response)
-        resp.status_code = 400
-        return resp
+        response = jsonify(response_body)
+        response.status_code = 400
+        return response
 
-    print(wishlist_data)
     return {
         "uid": wishlist_data["uid"],
         "secrets": wishlist_data["secrets"]
