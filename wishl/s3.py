@@ -1,53 +1,20 @@
+from wishl import constants
 from flask import (
-    Blueprint, request, jsonify, json
+    Blueprint, request, jsonify
 )
 import os
 import boto3
 from werkzeug.utils import secure_filename
 from flask_cors import cross_origin
 
-bp = Blueprint('s3', __name__, url_prefix='/s3')
+endpoints = constants.endpoints['s3']
+
+bp = Blueprint('s3', __name__)
 s3 = boto3.client('s3', aws_access_key_id=os.environ.get(
     'S3_KEY'), aws_secret_access_key=os.environ.get('S3_SECRET'))
 
 S3_BUCKET = os.environ.get('S3_BUCKET_NAME')
 S3_LOCATION = os.environ.get('S3_LOCATION')
-
-
-@bp.route('/get_sign', methods=(['GET']))
-def get_info():
-    file_name = request.args.get('file_name')
-    file_type = request.args.get('file_type')
-
-    cors_configuration = {
-        'CORSRules': [{
-            'AllowedHeaders': ['*'],
-            'AllowedMethods': ['GET', 'PUT', 'HEAD', 'POST', 'DELETE'],
-            'AllowedOrigins': ['*'],
-            'ExposeHeaders': ['ETag', 'x-amz-request-id'],
-            'MaxAgeSeconds': 3000
-        }]
-    }
-
-    s3 = boto3.client('s3', aws_access_key_id=os.environ.get(
-        'S3_KEY'), aws_secret_access_key=os.environ.get('S3_SECRET'))
-    s3.put_bucket_cors(Bucket=S3_BUCKET, CORSConfiguration=cors_configuration)
-
-    presigned_post = s3.generate_presigned_post(
-        Bucket=S3_BUCKET,
-        Key=file_name,
-        Fields={"acl": "public-read", "Content-Type": file_type},
-        Conditions=[
-            {"acl": "public-read"},
-            {"Content-Type": file_type}
-        ],
-        ExpiresIn=3600
-    )
-
-    return json.dumps({
-        'data': presigned_post,
-        'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
-    })
 
 
 def send_to_s3(file, bucket_name, acl="public-read"):
@@ -71,14 +38,21 @@ def send_to_s3(file, bucket_name, acl="public-read"):
     return "{}{}".format(S3_LOCATION, file.filename)
 
 
-@bp.route('/upload', methods=(['POST']))
+@bp.route(endpoints['upload'], methods=(['POST']))
 @cross_origin()
 def upload():
+    # return jsonify(something=1)
     S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-    file = request.files['file']
+    file = request.files and request.files['file']
 
-    if file.filename == "":
-        return "Please select a file"
+    if not file:
+        response_body = {
+            'success': False,
+            'error': 'file is required'
+        }
+        response = jsonify(response_body)
+        response.status_code = 400
+        return response
     if file:
         file.filename = secure_filename(file.filename)
         output = send_to_s3(file, S3_BUCKET_NAME)

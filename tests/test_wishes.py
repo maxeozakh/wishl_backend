@@ -14,7 +14,7 @@ def test_get_all_wishlists(client):
 
 
 def test_create(client, app):
-    secrets = "owl are not what they seem"
+    secrets = "owls are not what they seem"
     response = client.post(
         endpoints["create"], json={
             "uid": "4000",
@@ -51,6 +51,13 @@ def test_create_errors(client, app):
     assert response.status_code == 400
     assert response.json['error'] == 'uid is required.'
 
+    response = client.post(
+        endpoints["create"]
+    )
+
+    assert response.status_code == 400
+    assert response.json['error'] == 'body should contain json'
+
 
 def test_get_wishlist_by_uid(client):
     response = client.get(endpoints["get_by_uid"] + '123')
@@ -63,3 +70,19 @@ def test_get_wishlist_by_uid_error(client):
 
     assert response.status_code == 400
     assert response.json['error'] == 'wishlist by uid is not found.'
+
+
+def test_get_wishlist_by_uid_api(client, monkeypatch):
+    global function_called
+    function_called = False
+
+    def fake_get_wishlist_by_uid(uid):
+        global function_called
+        function_called = True
+        return 'hello'
+    monkeypatch.setattr('wishl.wishes.get_wishlist_by_uid',
+                        fake_get_wishlist_by_uid)
+
+    client.get(endpoints['get_by_uid'] + '123')
+
+    assert function_called
