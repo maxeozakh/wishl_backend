@@ -32,17 +32,25 @@ def index():
 
 @bp.route(endpoints["create"], methods=['POST'])
 def create():
+    error = None
+
+    if not request.is_json:
+        response_body = {
+            'success': False,
+            'error': 'body should contain json'
+        }
+        response = jsonify(response_body)
+        response.status_code = 400
+        return response
+
     json = request.get_json()
     uid = json.get('uid')
     secrets = json.get('secrets')
 
-    error = None
     if not uid:
         error = 'uid is required.'
     elif not secrets:
         error = 'secrets is required.'
-    elif not json:
-        error = 'json is empty.'
 
     if error is not None:
         response_body = {
