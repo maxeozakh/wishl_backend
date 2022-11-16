@@ -41,10 +41,8 @@ def send_to_s3(file, bucket_name, acl="public-read"):
 @bp.route(endpoints['upload'], methods=(['POST']))
 @cross_origin()
 def upload():
-    # return jsonify(something=1)
     S3_BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
     file = request.files and request.files['file']
-
     if not file:
         response_body = {
             'success': False,
