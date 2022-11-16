@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8e9f04452d91d7291d838075fb014c0574de8f23f8b04ae0fb2f9308d0f18bfe"
+            "sha256": "c14c633ba7eb92c4dff442801a424815684c463694922eab0ddfae0c806e60aa"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,19 +18,35 @@
     "default": {
         "boto3": {
             "hashes": [
-                "sha256:0a19d07a39d69b8e84e24d75474bbf4e737b1749d0c665503dfc2446f321e1f0",
-                "sha256:8f0e4eb5c26f927c09bc03302d38156af578b816f1e4f8ca4f0f734d134b9d4f"
+                "sha256:7e871c481f88e5b2fc6ac16eb190c95de21efb43ab2d959beacf8b7b096b11d2",
+                "sha256:b81e4aa16891eac7532ce6cc9eb690a8d2e0ceea3bcf44b5c5a1309c2500d35f"
             ],
             "index": "pypi",
-            "version": "==1.26.0"
+            "version": "==1.26.3"
         },
         "botocore": {
             "hashes": [
-                "sha256:c706640f8cf9297d2af87fc711394631afc14aaa225c7554e220964b5047b47d",
-                "sha256:f25dc0827005f81abf4b890a20c71f64ee40ea9e9795df38a242fdeed79e0a89"
+                "sha256:100534532b2745f6fa019b79199a8941f04b8168f9d557d0847191455f1f1eed",
+                "sha256:ac7986fefe1b9c6323d381c4fdee3845c67fa53eb6c9cf586a8e8a07270dbcfe"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.29.0"
+            "version": "==1.29.3"
+        },
+        "certifi": {
+            "hashes": [
+                "sha256:0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14",
+                "sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==2022.9.24"
+        },
+        "charset-normalizer": {
+            "hashes": [
+                "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845",
+                "sha256:83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==2.1.1"
         },
         "click": {
             "hashes": [
@@ -55,6 +71,14 @@
             ],
             "index": "pypi",
             "version": "==3.0.10"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4",
+                "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==3.4"
         },
         "itsdangerous": {
             "hashes": [
@@ -141,6 +165,22 @@
             ],
             "index": "pypi",
             "version": "==0.21.0"
+        },
+        "requests": {
+            "hashes": [
+                "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983",
+                "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"
+            ],
+            "markers": "python_version >= '3.7' and python_version < '4'",
+            "version": "==2.28.1"
+        },
+        "requests-mock": {
+            "hashes": [
+                "sha256:2fdbb637ad17ee15c06f33d31169e71bf9fe2bdb7bc9da26185be0dd8d842699",
+                "sha256:59c9c32419a9fb1ae83ec242d98e889c45bd7d7a65d48375cc243ec08441658b"
+            ],
+            "index": "pypi",
+            "version": "==1.10.0"
         },
         "s3transfer": {
             "hashes": [
@@ -256,11 +296,11 @@
         },
         "exceptiongroup": {
             "hashes": [
-                "sha256:2ac84b496be68464a2da60da518af3785fff8b7ec0d090a581604bc870bdee41",
-                "sha256:affbabf13fb6e98988c38d9c5650e701569fe3c1de3233cfb61c5f33774690ad"
+                "sha256:4d6c0aa6dd825810941c792f53d7b8d71da26f5e5f84f20f9508e8f2d33b140a",
+                "sha256:73866f7f842ede6cb1daa42c4af078e2035e5f7607f0e2c762cc51bb31bbe7b2"
             ],
             "markers": "python_version < '3.11'",
-            "version": "==1.0.0"
+            "version": "==1.0.1"
         },
         "iniconfig": {
             "hashes": [
