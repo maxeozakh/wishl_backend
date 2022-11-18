@@ -39,11 +39,16 @@ def test_upload(client, monkeypatch):
     assert function_args[0].filename == 'test9.jpg'
     assert function_args[1] == os.environ.get('S3_BUCKET_NAME')
 
+    """return error if file is not an image"""
+    data['file'] = (BytesIO(b"some file data"), 'test9.txt')
+
+    response = client.post(
+        constants.endpoints['dev'] + endpoints['upload'], data=data)
+
+    assert response.status_code == 400
+    assert response.json['error'] == 'file is not an image'
+
+
 # return exception if any appears
-
-
-# test_upload()
-
 # return exception if file is not presented
 # secure filename
-# call send_to_s3 with correct arguments
