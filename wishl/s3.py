@@ -17,6 +17,12 @@ S3_BUCKET = os.environ.get('S3_BUCKET_NAME')
 S3_LOCATION = os.environ.get('S3_LOCATION')
 
 
+def is_image(filename):
+    for extension in ['jpg', 'jpeg', 'png', 'gif']:
+        if filename.endswith(extension):
+            return True
+
+
 def send_to_s3(file, bucket_name, acl="public-read"):
     """
     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
@@ -51,6 +57,16 @@ def upload():
         response = jsonify(response_body)
         response.status_code = 400
         return response
+
+    if not is_image(file.filename):
+        response_body = {
+            'success': False,
+            'error': 'file is not an image'
+        }
+        response = jsonify(response_body)
+        response.status_code = 400
+        return response
+
     if file:
         file.filename = secure_filename(file.filename)
         output = send_to_s3(file, S3_BUCKET_NAME)
