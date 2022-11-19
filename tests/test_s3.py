@@ -6,47 +6,48 @@ endpoints = constants.endpoints['s3']
 URL = 'https://s3.amazonaws.com/wishl-bucket/test8.jpg'
 
 
-def fake_send_to_s3(*argv):
-    global function_called, function_args
-    function_args = argv
-    function_called = True
-    return URL
-
-
-def test_upload(client, monkeypatch):
-    """"rise an error if file is not provided"""
+class TestUpload:
     data = {}
-    data['file'] = (BytesIO(b"some file data"), 'test9.jpg')
 
-    response = client.post(
-        constants.endpoints['dev'] + endpoints['upload'])
+    def fake_send_to_s3(*argv):
+        global function_called, function_args
+        function_args = argv
+        function_called = True
+        return URL
 
-    assert response.status_code == 400
-    assert response.json['error'] == 'file is required'
+    def test_file_not_provided(self, client, monkeypatch):
 
-    """call send_to_s3 function with correct args if image is presented"""
-    global function_called, function_args
-    function_called = False
+        self.data['file'] = (BytesIO(b"some file data"), 'test9.jpg')
 
-    monkeypatch.setattr('wishl.s3.send_to_s3',
-                        fake_send_to_s3)
+        response = client.post(
+            constants.endpoints['dev'] + endpoints['upload'])
 
-    response = client.post(
-        constants.endpoints['dev'] + endpoints['upload'], data=data)
+        assert response.status_code == 400
+        assert response.json['error'] == 'file is required'
 
-    assert response.status_code == 200
-    assert function_called
-    assert function_args[0].filename == 'test9.jpg'
-    assert function_args[1] == os.environ.get('S3_BUCKET_NAME')
+    def test_call_send_to_s3_if_image_presented(self, client, monkeypatch):
+        global function_called, function_args
+        function_called = False
 
-    """return error if file is not an image"""
-    data['file'] = (BytesIO(b"some file data"), 'test9.txt')
+        monkeypatch.setattr('wishl.s3.send_to_s3',
+                            self.fake_send_to_s3)
 
-    response = client.post(
-        constants.endpoints['dev'] + endpoints['upload'], data=data)
+        response = client.post(
+            constants.endpoints['dev'] + endpoints['upload'], data=self.data)
 
-    assert response.status_code == 400
-    assert response.json['error'] == 'file is not an image'
+        assert response.status_code == 200
+        assert function_called
+        assert function_args[1].filename == 'test9.jpg'
+        assert function_args[2] == os.environ.get('S3_BUCKET_NAME')
+
+    def test_throw_error_if_image_not_presented(self, client, monkeypatch):
+        self.data['file'] = (BytesIO(b"some file data"), 'test9.txt')
+
+        response = client.post(
+            constants.endpoints['dev'] + endpoints['upload'], data=self.data)
+
+        assert response.status_code == 400
+        assert response.json['error'] == 'file is not an image'
 
 
 # return exception if any appears
